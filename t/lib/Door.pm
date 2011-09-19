@@ -2,39 +2,38 @@ package Door;
 
 use Moose;
 
-with 'MooseX::DFA::Simple';
+with 'MooseX::FSA::Simple';
 
-
-sub _build_dfa_transitions {
+sub _build_fsa_transitions {
     my ($self) = @_;
 
     my $transitions = {
         locked  => {
-            unlock_door => MooseX::DFA::Simple::Transition->new({
+            unlock_door => MooseX::FSA::Simple::Transition->new({
                 test    => 'TURN KEY CLOCKWISE',
                 action  => sub {$self->action_turn_key(@_)},
                 state   => 'closed',
             }),
         },
         closed => {
-            lock_door   => MooseX::DFA::Simple::Transition->new({
+            lock_door   => MooseX::FSA::Simple::Transition->new({
                 test    => 'TURN KEY ANTICLOCKWISE',
                 action  => sub {$self->action_turn_key(@_)},
                 state   => 'locked',
             }),
-            open_door   => MooseX::DFA::Simple::Transition->new({
+            open_door   => MooseX::FSA::Simple::Transition->new({
                 test    => 'PULL DOOR',
                 action  => sub {print "There is a rising 'eeerrrRRRKKK' sound\n";},
                 state   => 'open',
             }),
         },
         open => {
-            slam_door   => MooseX::DFA::Simple::Transition->new({
+            slam_door   => MooseX::FSA::Simple::Transition->new({
                 test    => 'SHOVE DOOR',
                 action  => sub {print "The door slams shut with a BANG\n";},
                 state   => 'closed',
             }),
-            close_door  => MooseX::DFA::Simple::Transition->new({
+            close_door  => MooseX::FSA::Simple::Transition->new({
                 test    => sub {$self->test_door_push(@_)},
                 action  => sub {print "There is a falling 'EEERRRrrrkkk' sound\n";},
                 state   => 'closed',
@@ -44,7 +43,7 @@ sub _build_dfa_transitions {
     return $transitions;
 }
 
-sub _build_dfa_states {
+sub _build_fsa_states {
     my ($self) = @_;
 
     my $states = {

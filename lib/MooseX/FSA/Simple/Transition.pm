@@ -1,6 +1,6 @@
-package MooseX::DFA::Simple::Transition;
+package MooseX::FSA::Simple::Transition;
 #
-# A transition taking place in MooseX::DFA::Simple
+# A transition taking place in MooseX::FSA::Simple
 #
 use Moose;
 
@@ -26,7 +26,6 @@ sub do_test {
     my ($self, $input) = @_;
 
     if ((ref $self->test) eq 'CODE') {
-#        print "do_test: about to do the test input=[$input]\n";
         my $ret_val = &{$self->test}($input);
         return $ret_val;
     }

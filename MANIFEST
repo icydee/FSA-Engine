@@ -1,0 +1,6 @@
+lib/MooseX/FSA/Simple.pm
+lib/MooseX/FSA/Simple/Transition.pm
+Makefile.PL
+MANIFEST
+t/00_door.t
+t/lib/Door.pm

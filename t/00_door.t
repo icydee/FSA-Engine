@@ -3,49 +3,115 @@ use strict;
 use warnings;
 
 use FindBin::libs;
-use Door;
+use Test::More;
+use Test::Output;
 
-my $door = Door->new({
-    dfa_state => 'locked',
-});
+BEGIN {
+    use_ok('Door');
+}
 
-print "door = [$door]\n";
+my $door;
+stdout_is(sub { $door = Door->new({fsa_state => 'locked'});}, "The door is locked\n", "Initial locked state");
 
-# door is closed and locked
-print "TURN KEY CLOCKWISE\n";
-$door->dfa_check_state('TURN KEY CLOCKWISE');
-# door is closed and unlocked
-print "TURN KEY ANTICLOCKWISE\n";
-$door->dfa_check_state('TURN KEY ANTICLOCKWISE');
-# door is closed and locked
-print "TURN KEY ANTICLOCKWISE\n";
-$door->dfa_check_state('TURN KEY ANTICLOCKWISE');
-# door is still closed and locked
-print "TURN KEY CLOCKWISE\n";
-$door->dfa_check_state('TURN KEY CLOCKWISE');
-# door is unlocked
-print "PUSH DOOR\n";
-$door->dfa_check_state('PUSH DOOR');
-# door does not move
-print "PULL DOOR\n";
-$door->dfa_check_state('PULL DOOR');
-# door pulls open
-print "TURN KEY CLOCKWISE\n";
-$door->dfa_check_state('TURN KEY CLOCKWISE');
-# nothing happens
-print "TURN KEY ANTICLOCKWISE\n";
-$door->dfa_check_state('TURN KEY ANTICLOCKWISE');
-# nothing happens
-print "PULL DOOR\n";
-$door->dfa_check_state('PULL DOOR');
-# nothing happens
-print "PuSh DoOr\n";
-$door->dfa_check_state('PuSh DoOr');
-# the door is closed
-print "PULL DOOR\n";
-$door->dfa_check_state('PULL DOOR');
-# the door is open
-print "SHOVE DOOR\n";
-$door->dfa_check_state('SHOVE DOOR');
-# the door is closed
+isa_ok($door, 'Door');
+is($door->fsa_state, 'locked', "Initial locked state");
+
+my $new_state;
+stdout_is(
+    sub { $new_state = $door->fsa_check_state('TURN KEY CLOCKWISE');},
+    "We are about to unlock the door\nThere is a quiet 'click'\nThe door is closed but unlocked\n",
+    "Turn key clockwise"
+);
+
+is($new_state, 'closed', "Door is now closed but unlocked");
+
+stdout_is(
+    sub { $new_state = $door->fsa_check_state('TURN KEY ANTICLOCKWISE');},
+    "There is a quiet 'click'\nThe door is locked\n",
+    "Turn key anti-clockwise"
+);
+
+is($new_state, 'locked', "Door is locked again");
+
+stdout_is(
+    sub { $new_state = $door->fsa_check_state('TURN KEY CLOCKWISE');},
+    "We are about to unlock the door\nThere is a quiet 'click'\nThe door is closed but unlocked\n",
+    "Turn key clockwise"
+);
+
+is($new_state, 'closed', "Door is now closed but unlocked again");
+
+stdout_is(
+    sub { $new_state = $door->fsa_check_state('TURN KEY CLOCKWISE');},
+    "",
+    "Turn key clockwise again"
+);
+
+is($new_state, undef, "state unchanged: Door is still closed and unlocked");
+
+stdout_is(
+    sub { $new_state = $door->fsa_check_state('PUSH DOOR');},
+    "",
+    "Push against shut door"
+);
+
+is($new_state, undef, "state unchanged: Can't push against a closed door");
+
+stdout_is(
+    sub { $new_state = $door->fsa_check_state('PULL DOOR');},
+    "There is a rising 'eeerrrRRRKKK' sound\nThe door is open\n",
+    "Pull against shut door"
+);
+
+is($new_state, 'open', "Door is pulled open");
+
+stdout_is(
+    sub { $new_state = $door->fsa_check_state('TURN KEY CLOCKWISE');},
+    "",
+    "Turn key clockwise when door is open"
+);
+
+is($new_state, undef, "state unchanged: Can't lock an open door");
+
+stdout_is(
+    sub { $new_state = $door->fsa_check_state('TURN KEY ANTICLOCKWISE');},
+    "",
+    "Turn key anti-clockwise when door is open"
+);
+
+is($new_state, undef, "state unchanged: Can't unlock an open door");
+
+stdout_is(
+    sub { $new_state = $door->fsa_check_state('PULL DOOR');},
+    "",
+    "Pull against an open door"
+);
+
+is($new_state, undef, "state unchanged: Can't open an open door");
+
+stdout_is(
+    sub { $new_state = $door->fsa_check_state('PuSh DoOr');},
+    "We are about to shut the door\nThere is a falling 'EEERRRrrrkkk' sound\nThe door is closed but unlocked\n",
+    "PuSh DoOr is recognised"
+);
+
+is($new_state, 'closed', "Mixed case state is recognised");
+
+stdout_is(
+    sub { $new_state = $door->fsa_check_state('PULL DOOR');},
+    "There is a rising 'eeerrrRRRKKK' sound\nThe door is open\n",
+    "Pull against shut door"
+);
+
+is($new_state, 'open', "Door is pulled open");
+
+stdout_is(
+    sub { $new_state = $door->fsa_check_state('SHOVE DOOR');},
+    "We are about to shut the door\nThe door slams shut with a BANG\nThe door is closed but unlocked\n",
+    "Shoved door"
+);
+
+is($new_state, 'closed', "Door is slammed closed");
+
+done_testing();
 1;
