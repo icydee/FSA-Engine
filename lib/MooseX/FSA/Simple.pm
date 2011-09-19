@@ -218,35 +218,35 @@ the names of each state and the value is a hash reference of the transitions
 possible from that state. A more complete example is as follows (which goes with
 the SYNOPSIS)
 
-sub _build_fsa_transitions {
-  my ($self) = @_;
-
-  return {
-    ping  => {
-      volley => MooseX::FSA::Simple::Transition->new({
-        test    => sub {$self->counter < 20;},
-        action  => sub {$self->counter($self->counter+1);},
-        state   => 'pong',
-      }),
-      end_of_game => MooseX::FSA::Simple::Transition->new({
-        test    => sub {$self->counter >= 20;},
-        action  => sub {print "Game over\n";},
-        state   => 'game_over',
-      }),
-    },
-    pong  => {
-      return_volley => MooseX::FSA::Simple::Transition->new({
-        test    => sub {1;},  # always goes back to ping
-        state   => 'ping',
-      }),
-    },
-    game_over   => {
-    },
-  };
-}
+  sub _build_fsa_transitions {
+    my ($self) = @_;
+  
+    return {
+      ping  => {
+        volley => MooseX::FSA::Simple::Transition->new({
+          test    => sub {$self->counter < 20;},
+          action  => sub {$self->counter($self->counter+1);},
+          state   => 'pong',
+        }),
+        end_of_game => MooseX::FSA::Simple::Transition->new({
+          test    => sub {$self->counter >= 20;},
+          action  => sub {print "Game over\n";},
+          state   => 'game_over',
+        }),
+      },
+      pong  => {
+        return_volley => MooseX::FSA::Simple::Transition->new({
+          test    => sub {1;},  # always goes back to ping
+          state   => 'ping',
+        }),
+      },
+      game_over   => {
+      },
+    };
+  }
 
 The transition names B<ping> B<pong> and B<game_over> are keys to
-B<MooseX::FSA::Simple::Transition> objects which will define the
+L<MooseX::FSA::Simple::Transition> objects which will define the
 B<test> to carry out, an optional B<action> to carry out if the test succeeds
 and the B<state> to move to if the test succeeds.
 
@@ -290,3 +290,19 @@ FSA.
   
 At other times it returns the current state of the FSA.
 
+=head1 SUPPORT
+
+This module is stored on an open TBD GitHub repository. Feel free to fork and contribute.
+
+Please file bug reports via TBD or by sending email to.
+
+=head1 AUTHOR
+
+Ian C. Docherty <pause@iandocherty.com>
+
+=head1 COPYRIGHT AND LICENSE
+
+Copyright(c) 2011 Ian C. Docherty
+
+This module is free software; you can distribute it and/or modify it under the same
+terms as Perl itself.
