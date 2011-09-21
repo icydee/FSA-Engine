@@ -1,6 +1,6 @@
-package MooseX::FSA::Simple::Transition;
+package FSA::Engine::Transition;
 #
-# A transition taking place in MooseX::FSA::Simple
+# A transition taking place in FSA::Engine
 #
 use Moose;
 
@@ -37,7 +37,7 @@ sub do_test {
 
 =head1 NAME
 
-MooseX::FSA::Simple::Transition - Transition object for MooseX::FSA::Simple objects.
+FSA::Engine::Transition - Transition object for FSA::Engine objects.
 
 =head1 SYNOPSIS
 
@@ -48,12 +48,12 @@ A Transition object is created as part of the definition of your FSA object.
 
     my $transitions = {
         open => {
-            slam_door   => MooseX::FSA::Simple::Transition->new({
+            slam_door   => FSA::Engine::Transition->new({
                 test    => 'SHOVE DOOR',
                 action  => sub {print "The door slams shut with a BANG\n";},
                 state   => 'closed',
             }),
-            close_door  => MooseX::FSA::Simple::Transition->new({
+            close_door  => FSA::Engine::Transition->new({
                 test    => sub {$self->test_door_push(@_)},
                 action  => sub {print "There is a falling 'EEERRRrrrkkk' sound\n";},
                 state   => 'closed',
@@ -64,7 +64,7 @@ A Transition object is created as part of the definition of your FSA object.
 =head1 DESCRIPTION
 
 This class defines a transition for your FSA class which has included the Moose Role
-L<MooseX::FSA::Simple>
+L<FSA::Engine>
 
 It defines the B<test> to carry out to determine if the transition is valid, the
 B<state> that is to be moved to if the B<test> succeeds and the optional B<action>

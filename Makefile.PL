@@ -4,8 +4,8 @@ use warnings;
 use ExtUtils::MakeMaker 6.30;
 
 my %WriteMakefileArgs = (
-    NAME                => 'MooseX::FSA::Simple',
-    VERSION_FROM        => 'lib/MooseX/FSA/Simple.pm',
+    NAME                => 'FSA::Engine',
+    VERSION_FROM        => 'lib/FSA/Engine.pm',
     AUTHOR              => 'Ian Docherty <pause@iandocherty.com>',
     BUILD_REQUIRES      => {
         'ExtUtils::MakeMaker'   => '6.42',
@@ -16,7 +16,7 @@ my %WriteMakefileArgs = (
     CONFIGURE_REQUIRES  => {
         'ExtUtils::MakeMaker'   => '6.30',
     },
-    DISTNAME            => 'MooseX-FSA-Simple',
+    DISTNAME            => 'FSA-Engine',
     EXE_FILES           => [],
     LICENSE             => 'perl',
     PREREQ_PM           => {

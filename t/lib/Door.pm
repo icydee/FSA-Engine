@@ -1,39 +1,40 @@
 package Door;
 
 use Moose;
+use FSA::Engine::Transition;
 
-with 'MooseX::FSA::Simple';
+with 'FSA::Engine';
 
 sub _build_fsa_transitions {
     my ($self) = @_;
 
     my $transitions = {
         locked  => {
-            unlock_door => MooseX::FSA::Simple::Transition->new({
+            unlock_door => FSA::Engine::Transition->new({
                 test    => 'TURN KEY CLOCKWISE',
                 action  => sub {$self->action_turn_key(@_)},
                 state   => 'closed',
             }),
         },
         closed => {
-            lock_door   => MooseX::FSA::Simple::Transition->new({
+            lock_door   => FSA::Engine::Transition->new({
                 test    => 'TURN KEY ANTICLOCKWISE',
                 action  => sub {$self->action_turn_key(@_)},
                 state   => 'locked',
             }),
-            open_door   => MooseX::FSA::Simple::Transition->new({
+            open_door   => FSA::Engine::Transition->new({
                 test    => 'PULL DOOR',
                 action  => sub {print "There is a rising 'eeerrrRRRKKK' sound\n";},
                 state   => 'open',
             }),
         },
         open => {
-            slam_door   => MooseX::FSA::Simple::Transition->new({
+            slam_door   => FSA::Engine::Transition->new({
                 test    => 'SHOVE DOOR',
                 action  => sub {print "The door slams shut with a BANG\n";},
                 state   => 'closed',
             }),
-            close_door  => MooseX::FSA::Simple::Transition->new({
+            close_door  => FSA::Engine::Transition->new({
                 test    => sub {$self->test_door_push(@_)},
                 action  => sub {print "There is a falling 'EEERRRrrrkkk' sound\n";},
                 state   => 'closed',

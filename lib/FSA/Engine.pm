@@ -1,4 +1,4 @@
-package MooseX::FSA::Simple;
+package FSA::Engine;
 our $VERSION = '0.01';
 $VERSION = eval $VERSION;
 
@@ -6,7 +6,6 @@ $VERSION = eval $VERSION;
 # Simple implementation of a Finite-state Automata as a Moose Role
 #
 use Moose::Role;
-use MooseX::FSA::Simple::Transition;
 
 # The states table, with optional entry and exit actions
 #
@@ -98,7 +97,7 @@ sub fsa_check_state {
 
 =head1 NAME
 
-MooseX::FSA::Simple - Moose Role to create a simple rules-based state machine.
+FSA::Engine - A Moose Role to convert an object into a Finite State Machine.
 
 =head1 SYNOPSIS
 
@@ -106,7 +105,7 @@ Create a Package which defines your FSA states and transition rules.
 
   package PingPong;
   use Moose;
-  with 'MooseX::FSA::Simple';
+  with 'FSA::Engine';
   
   has 'counter' => (
     is        => 'rw',
@@ -147,13 +146,13 @@ Create an instance of your class
 This Moose Role allows you to implement a simple state machine in your class by 
 defining the transitions and the states that comprise that state machine.
 
-All you need to do to transform your class into a FSA is to C<use MooseX::FSA::Simple>.
+All you need to do to transform your class into a FSA is to C<use FSA::Engine>.
 
 This is not an ideal DFA implementation since it does not enforce a single
 possible switch from one state to another, instead it short-circuits the
 evaluation at the first rule to return true.
 
-MooseX::FSA::Simple uses named states and named transitions so it is easier to
+FSA::Engine uses named states and named transitions so it is easier to
 tell what state you are in.
 
 Optionally, each state can have an entry and an exit action that are triggered
@@ -223,19 +222,19 @@ the SYNOPSIS)
   
     return {
       ping  => {
-        volley => MooseX::FSA::Simple::Transition->new({
+        volley => FSA::Engine::Transition->new({
           test    => sub {$self->counter < 20;},
           action  => sub {$self->counter($self->counter+1);},
           state   => 'pong',
         }),
-        end_of_game => MooseX::FSA::Simple::Transition->new({
+        end_of_game => FSA::Engine::Transition->new({
           test    => sub {$self->counter >= 20;},
           action  => sub {print "Game over\n";},
           state   => 'game_over',
         }),
       },
       pong  => {
-        return_volley => MooseX::FSA::Simple::Transition->new({
+        return_volley => FSA::Engine::Transition->new({
           test    => sub {1;},  # always goes back to ping
           state   => 'ping',
         }),
@@ -246,7 +245,7 @@ the SYNOPSIS)
   }
 
 The transition names B<ping> B<pong> and B<game_over> are keys to
-L<MooseX::FSA::Simple::Transition> objects which will define the
+L<FSA::Engine::Transition> objects which will define the
 B<test> to carry out, an optional B<action> to carry out if the test succeeds
 and the B<state> to move to if the test succeeds.
 
