@@ -146,7 +146,7 @@ Create an instance of your class
 This Moose Role allows you to implement a simple state machine in your class by 
 defining the transitions and the states that comprise that state machine.
 
-All you need to do to transform your class into a FSA is to C<use FSA::Engine>.
+All you need to do to transform your class into a FSA is to C<with 'FSA::Engine'>.
 
 This is not an ideal DFA implementation since it does not enforce a single
 possible switch from one state to another, instead it short-circuits the
@@ -244,7 +244,7 @@ the SYNOPSIS)
     };
   }
 
-The transition names B<ping> B<pong> and B<game_over> are keys to
+The transition names B<ping>, B<pong> and B<game_over> are keys to
 L<FSA::Engine::Transition> objects which will define the
 B<test> to carry out, an optional B<action> to carry out if the test succeeds
 and the B<state> to move to if the test succeeds.
@@ -286,18 +286,45 @@ When used during construction the C<fsa_state> determines the initial state of t
 FSA.
 
   $current_state = $my_fsa->fsa_state;
-  
+
 At other times it returns the current state of the FSA.
 
 =head1 SUPPORT
 
-This module is stored on an open TBD GitHub repository. Feel free to fork and contribute.
+You can find information at:
 
-Please file bug reports via TBD or by sending email to.
+=over 4
+
+=item * AnnoCPAN: Annotated CPAN documentation
+
+L<http://annocpan.org/dist/FSA-Engine>
+
+=item * CPAN Ratings
+
+L<http://cpanratings.perl.org/i/FSA-Engine>
+
+=item * RT: CPAN's request tracker
+
+L<http://rt.cpan.org/NoAuth/Bugs.html?Dist=FSA-Engine>
+
+=item * Search CPAN
+
+L<http://search.cpan.org/dist/FSA-Engine>
+
+=back
+
+=head1 SEE ALSO
+
+This module was influenced in part by L<FSA::Rules> which implements
+an FSA using a traditional Perl OO method.
 
 =head1 AUTHOR
 
 Ian C. Docherty <pause@iandocherty.com>
+
+Thanks also to James Spurin <pause@twitchy.net> for support and advice.
+
+Thanks to various members of the Moose mailing list for recommendations on how to name this module.
 
 =head1 COPYRIGHT AND LICENSE
 
